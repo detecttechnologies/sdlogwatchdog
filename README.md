@@ -23,10 +23,14 @@ sudo -H pip3 install git+https://github.com/detecttechnologies/sdlogwatchdog.git
 
 The syntax for usage is:
 ```bash
-sudo systemctl start sdlogwatchdog@"service1=staletimeout1".service
+sudo systemctl start sdlogwatchdog@"service-to-be-monitored=stale-timeout".service
 ```
-
-The `staletimeout` is the maximum permissible time for which the service can be left alive without it being killed and restarted. It supports any format for time specification supported by `python-dateutil`. Additionally, if no units are passed (ref: examples below), then it takes the units as seconds
+* The `stale-timeout` is the maximum permissible time for which the service can be left alive without it being killed and restarted. It supports any format for time specification supported by `python-dateutil`. Additionally, if no units are passed (ref: examples below), then it takes the units as seconds
+* If you would like to run this log-freshness-based watchdog for multiple systemd units parallely, then you can do so
+    ```bash
+    sudo systemctl start sdlogwatchdog@process1
+    sudo systemctl start sdlogwatchdog@"process2=7m 5s"
+    ```
 
 ### Examples:
 * Let us say you want to monitor a systemd-service called `my-program1.service`. If it doesn't throw any log messages for 25 seconds, you would like it to be restarted. Then, the command you need to run is
@@ -35,6 +39,8 @@ The `staletimeout` is the maximum permissible time for which the service can be 
     # OR 
     sudo systemctl start sdlogwatchdog@"my-program1=25s".service
     ```
+    ![image](https://user-images.githubusercontent.com/10851575/156838111-072ac2ab-1b56-4a9e-9b73-4e853b75dfdd.png)
+
 * Suppose you want to monitor a unit called `my-program2.service`, with a staleness timeout of 1 day , 3 hours, and 10 minutes:
     ```bash
     sudo systemctl start sdlogwatchdog@"my-program2=1d 3h 10m".service

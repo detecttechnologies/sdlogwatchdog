@@ -1,0 +1,12 @@
+[Unit]
+Description=sdlogwatchdog: staleness-based watchdog for systemd services
+
+[Service]
+Type=simple
+Restart=always
+Environment="SCRIPT_ARGS=%i"
+Environment=PYTHONUNBUFFERED=true
+ExecStart=/usr/bin/python3 -m sdlogwatchdog $SCRIPT_ARGS
+
+[Install]
+WantedBy=multi-user.target
